@@ -13,5 +13,6 @@ io.sockets.on('connection', function (socket) {
   socket.on('newJoueur', function (data) {
     tabJoueur.push(data.pseudo);
     console.log(tabJoueur);
+    socket.emit('getJoueurs', {tabJoueur: tabJoueur});
   });
 });
