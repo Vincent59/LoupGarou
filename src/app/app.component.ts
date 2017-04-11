@@ -9,8 +9,17 @@ import * as io from 'socket.io-client';
 
 export class AppComponent implements OnInit{
   private socket:any;
+
+
   ngOnInit(): void {
     this.socket = io('http://localhost:3005')
+    this.socket.on('news', function (data) {
+      console.log(data);
+    });
   }
-  title = 'app works!';
+  pseudo = '';
+  addJoueur(pseudo){
+    this.socket.emit('newJoueur', { pseudo : pseudo});
+    this.pseudo = pseudo;
+  }
 }

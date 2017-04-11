@@ -1,3 +1,3 @@
-<h1>
-  {{title}}
-</h1>
+<label>Votre pseudo:</label>
+<input #idPseudo (keyup.enter)="addJoueur(idPseudo.value)" type="text"/>
+<p>{{pseudo}}</p>
