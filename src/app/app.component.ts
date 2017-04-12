@@ -22,7 +22,7 @@ export class AppComponent implements OnInit{
   private chatElementComponent = new ChatElementComponent();
 
   ngOnInit(): void {
-    this.socket = io('http://192.168.43.39:3005');
+    this.socket = io('http://localhost:3005');
     this.socket.on('getJoueurs', function (data) {
 
       if(this.loop != 0){

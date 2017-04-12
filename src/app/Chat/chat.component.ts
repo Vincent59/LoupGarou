@@ -13,7 +13,7 @@ export class ChatComponent implements OnInit{
   private messages: ChatElementComponent[] = [];
 
   ngOnInit(): void {
-    this.socket = io('http://192.168.43.39:3005')
+    this.socket = io('http://localhost:3005')
     this.socket.on('getMessages', function (data) {
       this.messages = data.tabMessage;
     }.bind(this));
