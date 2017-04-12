@@ -8,9 +8,11 @@ app.use(express.static(__dirname));
 http.listen(PORT, () => console.log('Le serveur tourne'));
 
 tabJoueur = [];
+tabMessage = [];
 
 io.sockets.on('connection', function (socket) {
   socket.emit('getJoueurs', {tabJoueur: tabJoueur});
+  socket.emit('getMessages', {tabMessage: tabMessage});
 
   socket.on('newJoueur', function (data) {
     var present = false;
@@ -25,4 +27,21 @@ io.sockets.on('connection', function (socket) {
     }
     io.emit('getJoueurs', {tabJoueur: tabJoueur});
   });
+
+  /* Messages chat room */
+  socket.on('newMessage', function (data) {
+  		tabMessage.push(data.message);
+  		if(tabMessage.length==16){
+  			console.log("oui");
+  			console.log("avant 3 array shift: " + tabMessage);
+  			tabMessage.shift();
+  			tabMessage.shift();
+  			tabMessage.shift();
+  			console.log("apres 3 array shift: " + tabMessage);
+  		}
+
+  		io.emit('getMessages', {tabMessage: tabMessage});
+  });
+
+
 });

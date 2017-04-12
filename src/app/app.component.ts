@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import * as io from 'socket.io-client';
 import { Joueur } from './Joueur/Joueur';
+import { ChatElementComponent } from './Chat/chatElement.component';
 
 @Component({
   selector: 'app-root',
@@ -10,12 +11,14 @@ import { Joueur } from './Joueur/Joueur';
 
 export class AppComponent implements OnInit{
   private socket:any;
+
   private joueurs : Joueur[] = [];
   private currentJoueur : Joueur = new Joueur();
   private errorDoublon = "";
   private loop = 0;
-
   private start = false;
+
+  private chatElementComponent = new ChatElementComponent();
 
   ngOnInit(): void {
     this.socket = io('http://localhost:3005')
@@ -43,6 +46,20 @@ export class AppComponent implements OnInit{
   addJoueur(pseudo){
     this.errorDoublon = "";
     this.currentJoueur.setPseudo(pseudo);
+    this.chatElementComponent.setJoueur(this.currentJoueur);
     this.socket.emit('newJoueur', { joueur : this.currentJoueur });
+  }
+
+
+  addMessage(message: HTMLInputElement){
+    if(message.value != "")
+    {
+        this.chatElementComponent.setJoueur(this.currentJoueur);
+        this.chatElementComponent.setMessage(message.value);
+
+        this.socket.emit('newMessage', { message:  this.chatElementComponent });
+
+        message.value = null;
+    }
   }
 }
