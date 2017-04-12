@@ -15,21 +15,21 @@ export class AppComponent implements OnInit{
   private joueurs : Joueur[] = [];
   private currentJoueur : Joueur = new Joueur();
   private errorDoublon = "";
+  private erreurIp = "";
   private loop = 0;
   private start = false;
 
   private chatElementComponent = new ChatElementComponent();
 
   ngOnInit(): void {
-    this.socket = io('http://localhost:3005')
+    this.socket = io('http://192.168.43.39:3005');
     this.socket.on('getJoueurs', function (data) {
-      this.joueurs = data.tabJoueur;
+
       if(this.loop != 0){
-        if(this.errorDoublon=="")
-        {
+        if(this.errorDoublon=="" && this.erreurIp=="") {
           document.querySelector("#inscription").remove();
           document.getElementById("room").style.display = "block";
-          if(this.joueurs.length >= 6) //peut on lancer la partie
+          if (this.joueurs.length >= 6) //peut on lancer la partie
           {
             this.start = true;
           }
@@ -41,10 +41,19 @@ export class AppComponent implements OnInit{
     this.socket.on('erreurDoublon',function(data){
       this.errorDoublon = data.message;
     }.bind(this));
+
+    this.socket.on('erreurIp',function(data){
+      this.erreurIp = data.message;
+    }.bind(this));
+
+    this.socket.on('joueurs', function (data) {
+      this.joueurs = data.tabJoueur;
+    }.bind(this));
   }
 
   addJoueur(pseudo){
     this.errorDoublon = "";
+    this.erreurIp = "";
     this.currentJoueur.setPseudo(pseudo);
     this.chatElementComponent.setJoueur(this.currentJoueur);
     this.socket.emit('newJoueur', { joueur : this.currentJoueur });

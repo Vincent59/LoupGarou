@@ -11,8 +11,14 @@ export class Joueur
 
 	public pseudo;
 
+	public ip;
+
 	public setPseudo(pseudo)
 	{
 		this.pseudo = pseudo;
 	}
+
+	public setIp(ip){
+	  this.ip;
+  }
 }
