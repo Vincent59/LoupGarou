@@ -16,7 +16,6 @@ export class ChatComponent implements OnInit{
     this.socket = io('http://localhost:3005')
     this.socket.on('getMessages', function (data) {
       this.messages = data.tabMessage;
-      console.log(this.messages);
     }.bind(this));
   }
 }

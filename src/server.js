@@ -31,6 +31,15 @@ io.sockets.on('connection', function (socket) {
   /* Messages chat room */
   socket.on('newMessage', function (data) {
   		tabMessage.push(data.message);
+  		if(tabMessage.length==16){
+  			console.log("oui");
+  			console.log("avant 3 array shift: " + tabMessage);
+  			tabMessage.shift();
+  			tabMessage.shift();
+  			tabMessage.shift();
+  			console.log("apres 3 array shift: " + tabMessage);
+  		}
+
   		io.emit('getMessages', {tabMessage: tabMessage});
   });
 

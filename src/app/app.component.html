@@ -16,7 +16,8 @@
  	</ul>
 
  	<chat-room></chat-room>
-	<textarea #idMessage (keyup.enter)="addMessage(idMessage.value)"></textarea>
+	<input #idMessage (keyup.enter)="addMessage(idMessage.value)"/>
+	<button (click)="addMessage(idMessage.value)">Envoyer</button>
 </div>
 
 
