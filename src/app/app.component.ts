@@ -10,9 +10,9 @@ import { Joueur } from './Joueur/Joueur';
 
 export class AppComponent implements OnInit{
   private socket:any;
-  private pseudo;
   
   private joueurs : Joueur[] = [];
+  private currentJoueur : Joueur = new Joueur();
 
   ngOnInit(): void {
 
@@ -25,10 +25,7 @@ export class AppComponent implements OnInit{
   }
 
   addJoueur(pseudo){
-    var joueur = new Joueur();
-    joueur.setPseudo(pseudo);
-    console.log(joueur);
-    this.socket.emit('newJoueur', { joueur : joueur });
-    this.pseudo = pseudo;
+    this.currentJoueur.setPseudo(pseudo);
+    this.socket.emit('newJoueur', { joueur : this.currentJoueur });
   }
 }
