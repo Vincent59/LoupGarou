@@ -11,7 +11,6 @@ tabJoueur = [];
 tabMessage = [];
 
 io.sockets.on('connection', function (socket) {
-  console.log("Nouvelle connection")
   socket.emit('getJoueurs', {tabJoueur: tabJoueur});
   socket.emit('getMessages', {tabMessage: tabMessage});
 
@@ -19,6 +18,7 @@ io.sockets.on('connection', function (socket) {
     var present = false;
     ipClient = socket.conn.remoteAddress;
     data.joueur.ip = ipClient;
+    console.log("Nouvelle connection : "+ipClient)
     tabJoueur.forEach(function(e){
       if(e.ip==data.joueur.ip){
         present=true;
@@ -40,16 +40,24 @@ io.sockets.on('connection', function (socket) {
   socket.on('newMessage', function (data) {
   		tabMessage.push(data.message);
   		if(tabMessage.length==16){
-  			console.log("oui");
-  			console.log("avant 3 array shift: " + tabMessage);
   			tabMessage.shift();
   			tabMessage.shift();
   			tabMessage.shift();
-  			console.log("apres 3 array shift: " + tabMessage);
   		}
 
   		io.emit('getMessages', {tabMessage: tabMessage});
   });
 
+  socket.on('disconnect', function() {
+    ipClient = socket.conn.remoteAddress;
+    console.log('disconnect : '+ipClient);
+    tabJoueur.forEach(function(e,i){
+      if(e.ip==ipClient){
+        tabJoueur.splice(i,1);
+        console.log(tabJoueur);
+        io.emit('joueurs', {tabJoueur: tabJoueur});
+      }
+    })
+  });
 
 });
