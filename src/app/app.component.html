@@ -8,9 +8,16 @@
 	<h1>Bienvenue {{ currentJoueur.pseudo }}</h1>
 	<h2>Liste des joueurs dans la salle d'attentes</h2>
 	<button  [class.noStart]="!start" [class.start]="start" >Commencer la partie</button>
+	
 	<ul>
 		 <li *ngFor="let personne of joueurs">
 		 	{{ personne.pseudo }}
 		 </li>
  	</ul>
+
+ 	<chat-room></chat-room>
+	<input #idMessage (keyup.enter)="addMessage(idMessage.value)" type="text"/>
 </div>
+
+
+
