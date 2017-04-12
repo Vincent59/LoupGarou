@@ -51,13 +51,15 @@ export class AppComponent implements OnInit{
   }
 
 
-  addMessage(message){
-    if(message != "")
+  addMessage(message: HTMLInputElement){
+    if(message.value != "")
     {
         this.chatElementComponent.setJoueur(this.currentJoueur);
-        this.chatElementComponent.setMessage(message);
+        this.chatElementComponent.setMessage(message.value);
 
         this.socket.emit('newMessage', { message:  this.chatElementComponent });
+
+        message.value = null;
     }
   }
 }
