@@ -13,6 +13,10 @@ export class Joueur
 
 	public ip;
 
+	public role;
+
+	public isMort: boolean;
+
 	public setPseudo(pseudo)
 	{
 		this.pseudo = pseudo;

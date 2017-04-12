@@ -14,12 +14,17 @@ export class AppComponent implements OnInit{
 
   private joueurs : Joueur[] = [];
   private currentJoueur : Joueur = new Joueur();
+  private nombreDeJoueurs = 0;
   private errorDoublon = "";
   private erreurIp = "";
   private loop = 0;
   private start = false;
 
   private chatElementComponent = new ChatElementComponent();
+
+  private roles = [];
+  private nbVillageois = 0;
+  private nbLoups = 0;
 
   ngOnInit(): void {
     this.socket = io('http://localhost:3005');
@@ -29,10 +34,6 @@ export class AppComponent implements OnInit{
         if(this.errorDoublon=="" && this.erreurIp=="") {
           document.querySelector("#inscription").remove();
           document.getElementById("room").style.display = "block";
-          if (this.joueurs.length >= 6) //peut on lancer la partie
-          {
-            this.start = true;
-          }
         }
       }
       this.loop++;
@@ -42,12 +43,17 @@ export class AppComponent implements OnInit{
       this.errorDoublon = data.message;
     }.bind(this));
 
-    this.socket.on('erreurIp',function(data){
-      this.erreurIp = data.message;
-    }.bind(this));
+    // this.socket.on('erreurIp',function(data){
+    //   this.erreurIp = data.message;
+    // }.bind(this));
 
     this.socket.on('joueurs', function (data) {
       this.joueurs = data.tabJoueur;
+      this.nombreDeJoueurs = this.joueurs.length;
+      if(this.nombreDeJoueurs >= 6) //peut on lancer la partie
+      {
+          this.start = true;
+      }
     }.bind(this));
   }
 
@@ -71,4 +77,58 @@ export class AppComponent implements OnInit{
         message.value = null;
     }
   }
+
+  initialisationRoles(voyante, chasseur, petiteFille, cupidon, sorciere){
+      if(voyante) this.roles.push("voyante");
+      if(chasseur) this.roles.push("chasseur");
+      if(petiteFille) this.roles.push("petiteFille");
+      if(cupidon) this.roles.push("cupidon");
+      if(sorciere) this.roles.push("sorciere");
+      this.roles.push("loup");
+
+      switch (this.nombreDeJoueurs) {
+            case 6:
+              if(this.roles.length != 6)
+              {
+                this.roles.push("loup");
+              }
+              break;
+            case 7:
+              this.roles.push("loup");
+              break;
+            default:
+              this.roles.push("loup");
+              this.roles.push("loup");
+              break;
+          }   
+      
+      for (var i = 0; i < (this.nombreDeJoueurs - this.roles.length); i++) {
+             this.roles.push("villageois");
+      }  
+
+      console.log(this.roles);
+
+      this.roles = this.shuffle(this.roles);  
+
+      console.log(this.roles);
+  }
+
+  shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
 }

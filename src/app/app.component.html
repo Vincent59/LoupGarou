@@ -3,13 +3,11 @@
   <input #idPseudo (keyup.enter)="addJoueur(idPseudo.value)" type="text"/>
   <p>{{errorDoublon}}</p>
   <p>{{erreurIp}}</p>
-  <p>Chez maxime</p>
 </div>
 
 <div id="room">
 	<h1>Bienvenue {{ currentJoueur.pseudo }}</h1>
-	<h2>Liste des joueurs dans la salle d'attentes</h2>
-	<button  [class.noStart]="!start" [class.start]="start" >Commencer la partie</button>
+	<h2>Liste des joueurs dans la salle d'attentes ({{nombreDeJoueurs}})</h2>
 
 	<ul>
 		 <li *ngFor="let personne of joueurs">
@@ -17,6 +15,27 @@
 		 </li>
  	</ul>
 
+ 	<h2>Configuration de la partie</h2>
+ 	
+ 	<label>Voyante</label>
+ 	<input #voyante type="checkbox" data-toggle="toggle">
+	<br>
+ 	<label>Chasseur</label>
+ 	<input #chasseur type="checkbox" data-toggle="toggle">
+	<br>
+ 	<label>Petite fille</label>
+ 	<input #petiteFille type="checkbox" data-toggle="toggle">
+	<br>
+	<label>Cupidon</label>
+ 	<input #cupidon type="checkbox" data-toggle="toggle">
+	<br>
+ 	<label>Sorcière</label>
+ 	<input #sorciere type="checkbox" data-toggle="toggle">
+	<br>
+	
+	<button  [class.noStart]="!start" [class.start]="start" (click)="initialisationRoles(voyante.checked, chasseur.checked, petiteFille.checked, cupidon.checked, sorciere.checked)" >Commencer la partie</button>
+
+ 	<h2>Chat room</h2>
  	<chat-room></chat-room>
 	<input #idMessage (keyup.enter)="addMessage(idMessage)"/>
 	<button (click)="addMessage(idMessage)">Envoyer</button>
