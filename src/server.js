@@ -23,6 +23,6 @@ io.sockets.on('connection', function (socket) {
     if(!present){
       tabJoueur.push(data.joueur);
     }
-    socket.emit('getJoueurs', {tabJoueur: tabJoueur});
+    io.emit('getJoueurs', {tabJoueur: tabJoueur});
   });
 });
