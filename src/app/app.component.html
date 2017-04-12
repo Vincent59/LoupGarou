@@ -1,3 +1,10 @@
 <label>Votre pseudo:</label>
 <input #idPseudo (keyup.enter)="addJoueur(idPseudo.value)" type="text"/>
+
 <p>{{pseudo}}</p>
+
+<ul>
+	 <li *ngFor="let personne of joueurs">
+	 	{{ personne.pseudo }}
+	 </li>
+ </ul>
