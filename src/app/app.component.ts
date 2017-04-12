@@ -15,29 +15,27 @@ export class AppComponent implements OnInit{
   private errorDoublon = "";
   private loop = 0;
 
+  private start = false;
+
   ngOnInit(): void {
-
     this.socket = io('http://localhost:3005')
-
     this.socket.on('getJoueurs', function (data) {
-          var tmp = data.tabJoueur;
-          this.joueurs = data.tabJoueur;
-          if(this.loop != 0){
-            console.log("loop");
-            console.log(typeof(this.errorDoublon));
-            if(this.errorDoublon==""){
-              console.log("undefined");
-              document.querySelector("#inscription").remove();
-              document.getElementById("room").style.display = "block";
-            }else{
-
-            }
+      this.joueurs = data.tabJoueur;
+      if(this.loop != 0){
+        if(this.errorDoublon=="")
+        {
+          document.querySelector("#inscription").remove();
+          document.getElementById("room").style.display = "block";
+          if(this.joueurs.length >= 6) //peut on lancer la partie
+          {
+            this.start = true;
           }
-          this.loop++;
+        }
+      }
+      this.loop++;
     }.bind(this));
 
     this.socket.on('erreurDoublon',function(data){
-      console.log("ici");
       this.errorDoublon = data.message;
     }.bind(this));
   }
