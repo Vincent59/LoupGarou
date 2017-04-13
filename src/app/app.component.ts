@@ -18,19 +18,19 @@ export class AppComponent implements OnInit{
   private errorDoublon = "";
   private erreurIp = "";
   private loop = 0;
+  public loopDeux = 0;
   private start = false;
+  private nbLoups = 0;
 
   private chatElementComponent = new ChatElementComponent();
 
   private roles = [];
   private nbVillageois = 0;
-  private nbLoups = 0;
 
   ngOnInit(): void {
     //192.168.43.39
     this.socket = io('http://192.168.43.39:3005'); //localhost en local
     this.socket.on('getJoueurs', function (data) {
-
       if(this.loop != 0){
         if(this.errorDoublon=="" && this.erreurIp=="") {
           document.querySelector("#inscription").remove();
@@ -49,24 +49,31 @@ export class AppComponent implements OnInit{
     // }.bind(this)); //a deco en local
 
     this.socket.on('joueurs', function (data) {
+      var loopDeux = this.loopDeux;
+      var pseudoJoueur = this.currentJoueur;
       var tmp = [];
+      console.log(data.tabJoueur);
       data.tabJoueur.forEach(function(e,i){
           var j = new Joueur();
           j.setPseudo(e.pseudo);
           j.setIp(e.ip);
+          j.setRole(e.role);
+
           if(i == 0){
             j.setIsMaster(true);
           }
-          // console.log(this.currentJoueur);
-          // if(this.currentJoueur.pseudo == j.pseudo){
-          //   this.currentJoueur.setIsMaster(true);
-          // }
           tmp.push(j);
-          console.log(j);
 
       });
+
       this.joueurs = tmp;
-      console.log(this.joueurs);
+
+      for(var i=0; i < this.joueurs.length; i++){
+        if(this.joueurs[i].pseudo == this.currentJoueur.pseudo){
+          this.currentJoueur.setRole(this.joueurs[i].role);
+        }
+      }
+
       this.nombreDeJoueurs = this.joueurs.length;
 
       if(this.nombreDeJoueurs >= 6) //peut on lancer la partie
@@ -103,23 +110,27 @@ export class AppComponent implements OnInit{
       if(cupidon) this.roles.push("cupidon");
       if(sorciere) this.roles.push("sorciere");
 
-      console.log("Avant loup: " + this.roles);
 
       this.roles.push("loup");
+      this.nbLoups++;
 
       switch (this.nombreDeJoueurs) {
             case 6:
               if(this.roles.length != 6)
               {
                 this.roles.push("loup");
+                this.nbLoups++;
               }
               break;
             case 7:
               this.roles.push("loup");
+              this.nbLoups++;
               break;
             default:
               this.roles.push("loup");
               this.roles.push("loup");
+              this.nbLoups++;
+              this.nbLoups++;
               break;
           }
 
@@ -133,6 +144,24 @@ export class AppComponent implements OnInit{
       for (var i =  0; i < this.nombreDeJoueurs; i++) {
             this.joueurs[i].setRole(this.roles[i]);
      }
+
+     this.socket.emit("updateTabJoueur",this.joueurs);
+     this.demarrerLaPartie();
+  }
+
+  demarrerLaPartie(){
+    var serveur = new Joueur();
+    serveur.setPseudo("Serveur");
+    this.chatElementComponent.setJoueur(serveur);
+    this.chatElementComponent.setMessage("La partie commence ...");
+    this.socket.emit('newMessage', { message:  this.chatElementComponent });
+    console.log(this.joueurs);
+    this.chatElementComponent.setJoueur(serveur);
+    this.chatElementComponent.setMessage("La nuit tombe et le clan des loups décident de tuer quelqu'un");
+    this.socket.emit('newMessage', { message:  this.chatElementComponent });
+    // while(this.nbLoups != 0){
+    //
+    // }
   }
 
 

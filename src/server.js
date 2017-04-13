@@ -9,6 +9,7 @@ http.listen(PORT, () => console.log('Le serveur tourne'));
 
 tabJoueur = [];
 tabMessage = [];
+tabMessageLoup = [];
 
 io.sockets.on('connection', function (socket) {
   socket.emit('getJoueurs', {tabJoueur: tabJoueur});
@@ -17,7 +18,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('newJoueur', function (data) {
     var present = false;
     ipClient = socket.conn.remoteAddress;
-    data.joueur.ip = ipClient; //a deco en local
+    //data.joueur.ip = ipClient; //a deco en local
     console.log("Nouvelle connection : "+ipClient)
     tabJoueur.forEach(function(e){
       // if(e.ip==data.joueur.ip){ //a deco en local
@@ -44,8 +45,17 @@ io.sockets.on('connection', function (socket) {
   			tabMessage.shift();
   			tabMessage.shift();
   		}
-
   		io.emit('getMessages', {tabMessage: tabMessage});
+  });
+
+  socket.on('newMessageLoup', function (data) {
+    tabMessageLoup.push(data.message);
+    if(tabMessageLoup.length==16){
+      tabMessageLoup.shift();
+      tabMessageLoup.shift();
+      tabMessageLoup.shift();
+    }
+    io.emit('getMessagesLoup', {tabMessage: tabMessage});
   });
 
   socket.on('disconnect', function() {
@@ -59,5 +69,10 @@ io.sockets.on('connection', function (socket) {
       }
     })
   });
+
+  socket.on('updateTabJoueur',function (data) {
+    this.tabJoueur = data;
+    io.emit('joueurs', {tabJoueur: this.tabJoueur});
+  })
 
 });

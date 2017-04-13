@@ -1,6 +1,7 @@
-.contenu{
+.contenuLoup{
+  margin-left: 320px;
 	height: 300px;
-  width: 800px;
+  width:100px;
 	background-color: grey;
 	color:white;
 }
