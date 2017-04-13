@@ -11,7 +11,7 @@
 
 	<ul>
 		 <li *ngFor="let personne of joueurs">
-		 	{{ personne.pseudo }}<span *ngIf="personne.isMaster"> (master)</span><span *ngIf="personne.pseudo==currentJoueur.pseudo && currentJoueur.role!='loup'"> ({{currentJoueur.role}})</span>
+		 	{{ personne.pseudo }}<span *ngIf="personne.isMaster"> (master)</span><span *ngIf="personne.pseudo==currentJoueur.pseudo && currentJoueur.role!='loup' && currentJoueur.role"> ({{currentJoueur.role}})</span>
        <span *ngIf="personne.role=='loup' && currentJoueur.role == 'loup'"> (loup)</span>
 		 </li>
  	</ul>
