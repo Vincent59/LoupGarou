@@ -1,3 +1,7 @@
 #room {
   display:none;
 }
+
+#spectateur{
+  display: none;
+}

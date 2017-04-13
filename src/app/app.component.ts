@@ -21,6 +21,7 @@ export class AppComponent implements OnInit{
   public loopDeux = 0;
   private start = false;
   private nbLoups = 0;
+  private partieStart = false;
 
   private chatElementComponent = new ChatElementComponent();
 
@@ -30,6 +31,13 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     //192.168.43.39
     this.socket = io('http://192.168.43.39:3005'); //localhost en local
+
+    this.socket.on('partieEnCours', function (data) {
+      document.querySelector("#inscription").remove();
+      document.getElementById("spectateur").style.display = "block";
+      document.getElementById("room").style.display = "block";
+    });
+
     this.socket.on('getJoueurs', function (data) {
       if(this.loop != 0){
         if(this.errorDoublon=="" && this.erreurIp=="") {
@@ -150,11 +158,12 @@ export class AppComponent implements OnInit{
   }
 
   demarrerLaPartie(){
+    this.partieStart = true;
     var serveur = new Joueur();
     serveur.setPseudo("Serveur");
     this.chatElementComponent.setJoueur(serveur);
     this.chatElementComponent.setMessage("La partie commence ...");
-    this.socket.emit('newMessage', { message:  this.chatElementComponent });
+    this.socket.emit('newMessage', { message:  this.chatElementComponent , start: true});
     console.log(this.joueurs);
     this.chatElementComponent.setJoueur(serveur);
     this.chatElementComponent.setMessage("La nuit tombe et le clan des loups décident de tuer quelqu'un");
