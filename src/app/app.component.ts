@@ -176,10 +176,19 @@ export class AppComponent implements OnInit{
   boucleJeu() {
     console.log("ICI");
     this.nuit(function () {
-      console.log("Ok");
       this.nbLoups--;
       console.log(this.nbLoups);
-      if (this.nbLoups != 0) this.boucleJeu();
+      if (this.nbLoups == 0){
+        this.serveurParle("les villageois ont gagné");
+      }else{
+        this.jour(function(){
+          if (this.nbLoups == 0){
+            this.serveurParle("les villagois ont gagné")
+          }else{
+            this.boucleJeu();
+          }
+        }.bind(this));
+      }
     }.bind(this));
   }
 
@@ -200,8 +209,13 @@ export class AppComponent implements OnInit{
     }.bind(this),15000)
   }
 
-  jour(){
-
+  jour(callback){
+    this.serveurParle("Le jour se lève, ... est mort cette nuit");
+    this.serveurParle("Les joueurs doivent désigner un joueur à éliminé");
+    setTimeout(function(){
+      this.serveurParle("Les joueurs ont voté, ... est éliminé");
+      callback();
+    }.bind(this),10000);
   }
 
   serveurParle(message){
