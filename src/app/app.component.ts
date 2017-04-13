@@ -44,18 +44,26 @@ export class AppComponent implements OnInit{
       this.errorDoublon = data.message;
     }.bind(this));
 
-    this.socket.on('erreurIp',function(data){ //a deco en local
-      this.erreurIp = data.message; //a deco en local
-    }.bind(this)); //a deco en local
+    // this.socket.on('erreurIp',function(data){ //a deco en local
+    //   this.erreurIp = data.message; //a deco en local
+    // }.bind(this)); //a deco en local
 
     this.socket.on('joueurs', function (data) {
       var tmp = [];
-      data.tabJoueur.forEach(function(e){
+      data.tabJoueur.forEach(function(e,i){
           var j = new Joueur();
           j.setPseudo(e.pseudo);
           j.setIp(e.ip);
+          if(i == 0){
+            j.setIsMaster(true);
+          }
+          // console.log(this.currentJoueur);
+          // if(this.currentJoueur.pseudo == j.pseudo){
+          //   this.currentJoueur.setIsMaster(true);
+          // }
           tmp.push(j);
           console.log(j);
+
       });
       this.joueurs = tmp;
       console.log(this.joueurs);
@@ -94,7 +102,7 @@ export class AppComponent implements OnInit{
       if(petiteFille) this.roles.push("petiteFille");
       if(cupidon) this.roles.push("cupidon");
       if(sorciere) this.roles.push("sorciere");
-      
+
       console.log("Avant loup: " + this.roles);
 
       this.roles.push("loup");
@@ -113,15 +121,15 @@ export class AppComponent implements OnInit{
               this.roles.push("loup");
               this.roles.push("loup");
               break;
-          }   
-      
+          }
+
       var max = this.nombreDeJoueurs - this.roles.length;
       for (var i = 0; i < max; i++) {
              this.roles.push("villageois");
-      }  
+      }
 
-      this.roles = this.shuffle(this.roles);  
-    
+      this.roles = this.shuffle(this.roles);
+
       for (var i =  0; i < this.nombreDeJoueurs; i++) {
             this.joueurs[i].setRole(this.roles[i]);
      }
