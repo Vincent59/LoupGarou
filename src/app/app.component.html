@@ -11,30 +11,32 @@
 
 	<ul>
 		 <li *ngFor="let personne of joueurs">
-		 	{{ personne.pseudo }}
+		 	{{ personne.pseudo }}<span *ngIf="personne.isMaster"> (master)</span>
 		 </li>
  	</ul>
 
- 	<h2>Configuration de la partie</h2>
- 	
- 	<label>Voyante</label>
- 	<input #voyante type="checkbox" data-toggle="toggle">
-	<br>
- 	<label>Chasseur</label>
- 	<input #chasseur type="checkbox" data-toggle="toggle">
-	<br>
- 	<label>Petite fille</label>
- 	<input #petiteFille type="checkbox" data-toggle="toggle">
-	<br>
-	<label>Cupidon</label>
- 	<input #cupidon type="checkbox" data-toggle="toggle">
-	<br>
- 	<label>Sorcière</label>
- 	<input #sorciere type="checkbox" data-toggle="toggle">
-	<br>
-	
-	<button  [class.noStart]="!start" [class.start]="start" (click)="initialisationRoles(voyante.checked, chasseur.checked, petiteFille.checked, cupidon.checked, sorciere.checked)" >Commencer la partie</button>
+  <div *ngFor="let personne of joueurs">
+    <div *ngIf="personne.isMaster && personne.pseudo == currentJoueur.pseudo">
+        <h2>Configuration de la partie</h2>
 
+        <label>Voyante</label>
+        <input #voyante type="checkbox" data-toggle="toggle">
+        <br>
+        <label>Chasseur</label>
+        <input #chasseur type="checkbox" data-toggle="toggle">
+        <br>
+        <label>Petite fille</label>
+        <input #petiteFille type="checkbox" data-toggle="toggle">
+        <br>
+        <label>Cupidon</label>
+        <input #cupidon type="checkbox" data-toggle="toggle">
+        <br>
+        <label>Sorcière</label>
+        <input #sorciere type="checkbox" data-toggle="toggle">
+        <br>
+        <button  [class.noStart]="!start" [class.start]="start" (click)="initialisationRoles(voyante.checked, chasseur.checked, petiteFille.checked, cupidon.checked, sorciere.checked)" >Commencer la partie</button>
+    </div>
+  </div>
  	<h2>Chat room</h2>
  	<chat-room></chat-room>
 	<input #idMessage (keyup.enter)="addMessage(idMessage)"/>

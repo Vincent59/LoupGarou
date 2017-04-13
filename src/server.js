@@ -20,10 +20,10 @@ io.sockets.on('connection', function (socket) {
     data.joueur.ip = ipClient; //a deco en local
     console.log("Nouvelle connection : "+ipClient)
     tabJoueur.forEach(function(e){
-      if(e.ip==data.joueur.ip){ //a deco en local
-        present=true; //a deco en local
-        socket.emit('erreurIp',{message : "Cette ip est déjà utilisée."}) //a deco en local
-      } //a deco en local
+      // if(e.ip==data.joueur.ip){ //a deco en local
+      //   present=true; //a deco en local
+      //   socket.emit('erreurIp',{message : "Cette ip est déjà utilisée."}) //a deco en local
+      // } //a deco en local
       if(e.pseudo==data.joueur.pseudo){
         present=true;
         socket.emit('erreurDoublon', {message : "Joueur déjà présent."});
