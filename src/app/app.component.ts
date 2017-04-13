@@ -27,7 +27,8 @@ export class AppComponent implements OnInit{
   private nbLoups = 0;
 
   ngOnInit(): void {
-    this.socket = io('http://localhost:3005');
+    //192.168.43.39
+    this.socket = io('http://192.168.43.39:3005'); //localhost en local
     this.socket.on('getJoueurs', function (data) {
 
       if(this.loop != 0){
@@ -43,13 +44,23 @@ export class AppComponent implements OnInit{
       this.errorDoublon = data.message;
     }.bind(this));
 
-    // this.socket.on('erreurIp',function(data){
-    //   this.erreurIp = data.message;
-    // }.bind(this));
+    this.socket.on('erreurIp',function(data){ //a deco en local
+      this.erreurIp = data.message; //a deco en local
+    }.bind(this)); //a deco en local
 
     this.socket.on('joueurs', function (data) {
-      this.joueurs = data.tabJoueur;
+      var tmp = [];
+      data.tabJoueur.forEach(function(e){
+          var j = new Joueur();
+          j.setPseudo(e.pseudo);
+          j.setIp(e.ip);
+          tmp.push(j);
+          console.log(j);
+      });
+      this.joueurs = tmp;
+      console.log(this.joueurs);
       this.nombreDeJoueurs = this.joueurs.length;
+
       if(this.nombreDeJoueurs >= 6) //peut on lancer la partie
       {
           this.start = true;
@@ -64,7 +75,6 @@ export class AppComponent implements OnInit{
     this.chatElementComponent.setJoueur(this.currentJoueur);
     this.socket.emit('newJoueur', { joueur : this.currentJoueur });
   }
-
 
   addMessage(message: HTMLInputElement){
     if(message.value != "")
@@ -84,6 +94,9 @@ export class AppComponent implements OnInit{
       if(petiteFille) this.roles.push("petiteFille");
       if(cupidon) this.roles.push("cupidon");
       if(sorciere) this.roles.push("sorciere");
+      
+      console.log("Avant loup: " + this.roles);
+
       this.roles.push("loup");
 
       switch (this.nombreDeJoueurs) {
@@ -102,16 +115,18 @@ export class AppComponent implements OnInit{
               break;
           }   
       
-      for (var i = 0; i < (this.nombreDeJoueurs - this.roles.length); i++) {
+      var max = this.nombreDeJoueurs - this.roles.length;
+      for (var i = 0; i < max; i++) {
              this.roles.push("villageois");
       }  
 
-      console.log(this.roles);
-
       this.roles = this.shuffle(this.roles);  
-
-      console.log(this.roles);
+    
+      for (var i =  0; i < this.nombreDeJoueurs; i++) {
+            this.joueurs[i].setRole(this.roles[i]);
+     }
   }
+
 
   shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;

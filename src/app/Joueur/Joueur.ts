@@ -8,13 +8,9 @@ import { Component, Input } from '@angular/core';
 export class Joueur
 { 
 	@Input() joueur;
-
 	public pseudo;
-
 	public ip;
-
 	public role;
-
 	public isMort: boolean;
 
 	public setPseudo(pseudo)
@@ -23,6 +19,10 @@ export class Joueur
 	}
 
 	public setIp(ip){
-	  this.ip;
-  }
+	  this.ip = ip;
+  	}
+
+  	public setRole(role){
+	  this.role = role;
+  	}
 }
