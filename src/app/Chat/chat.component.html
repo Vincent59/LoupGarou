@@ -1,3 +1,10 @@
-<div class="contenu">
-	<p *ngFor="let message of messages">{{ message.joueur.pseudo }}: {{message.message}}</p>
+<div class="chatbox_contenu">
+    <p *ngFor="let message of messages">
+        <span class="chatbox_pseudo">
+            {{message.joueur.pseudo}}
+        </span>
+        <span class="chatbox_msg">
+            {{message.message}}
+        </span>
+    </p>
 </div>
