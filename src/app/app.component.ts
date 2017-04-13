@@ -21,7 +21,9 @@ export class AppComponent implements OnInit{
   public loopDeux = 0;
   private start = false;
   private nbLoups = 0;
+  private nbGentil = 0;
   private partieStart = false;
+  private server;
 
   private chatElementComponent = new ChatElementComponent();
 
@@ -31,6 +33,9 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     //192.168.43.39
     this.socket = io('http://192.168.43.39:3005'); //localhost en local
+
+    this.server = new Joueur();
+    this.server.setPseudo("Serveur");
 
     this.socket.on('partieEnCours', function (data) {
       document.querySelector("#inscription").remove();
@@ -154,23 +159,55 @@ export class AppComponent implements OnInit{
      }
 
      this.socket.emit("updateTabJoueur",this.joueurs);
+     this.nbGentil = this.joueurs.length - this.nbLoups;
      this.demarrerLaPartie();
   }
 
   demarrerLaPartie(){
     this.partieStart = true;
-    var serveur = new Joueur();
-    serveur.setPseudo("Serveur");
-    this.chatElementComponent.setJoueur(serveur);
+    this.chatElementComponent.setJoueur(this.server);
     this.chatElementComponent.setMessage("La partie commence ...");
     this.socket.emit('newMessage', { message:  this.chatElementComponent , start: true});
     console.log(this.joueurs);
-    this.chatElementComponent.setJoueur(serveur);
-    this.chatElementComponent.setMessage("La nuit tombe et le clan des loups décident de tuer quelqu'un");
-    this.socket.emit('newMessage', { message:  this.chatElementComponent });
-    // while(this.nbLoups != 0){
-    //
-    // }
+    this.boucleJeu();
+
+  }
+
+  boucleJeu() {
+    console.log("ICI");
+    this.nuit(function () {
+      console.log("Ok");
+      this.nbLoups--;
+      console.log(this.nbLoups);
+      if (this.nbLoups != 0) this.boucleJeu();
+    }.bind(this));
+  }
+
+
+  nuit(callback){
+    this.serveurParle("La nuit tombe ...");
+    this.serveurParle("La voyante se reveille");
+    setTimeout(function(){
+      this.serveurParle("La loups et la petite fille se reveillent");
+      setTimeout(function(){
+        this.serveurParle("Les loups ont désigné leurs cibles");
+        this.serveurParle("La sorcière se reveille");
+        setTimeout(function(){
+          console.log("sorcière ok");
+          callback();
+        }.bind(this),15000)
+      }.bind(this),30000)
+    }.bind(this),15000)
+  }
+
+  jour(){
+
+  }
+
+  serveurParle(message){
+    this.chatElementComponent.setJoueur(this.server);
+    this.chatElementComponent.setMessage(message);
+    this.socket.emit('newMessage', { message:  this.chatElementComponent});
   }
 
 
