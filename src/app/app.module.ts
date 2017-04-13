@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { Joueur } from './Joueur/Joueur';
 import { ChatComponent } from './Chat/chat.component';
 import { ChatElementComponent } from './Chat/chatElement.component';
+import {ChatLoupComponent} from "./ChatLoup/chatLoup.component";
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { ChatElementComponent } from './Chat/chatElement.component';
     Joueur,
     ChatComponent,
     ChatElementComponent,
+    ChatLoupComponent
   ],
   imports: [
     BrowserModule,
@@ -23,6 +25,6 @@ import { ChatElementComponent } from './Chat/chatElement.component';
     RouterModule
   ],
   providers: [ ],
-  bootstrap: [AppComponent, ChatComponent]
+  bootstrap: [AppComponent, ChatComponent,ChatLoupComponent]
 })
 export class AppModule { }
