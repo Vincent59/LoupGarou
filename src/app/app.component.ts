@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import * as io from 'socket.io-client';
-import { Joueur } from './Joueur/Joueur';
-import { ChatElementComponent } from './Chat/chatElement.component';
+import {Joueur} from './Joueur/Joueur';
+import {ChatElementComponent} from './Chat/chatElement.component';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
 })
 
 export class AppComponent implements OnInit{
@@ -144,64 +144,63 @@ export class AppComponent implements OnInit{
     this.socket.emit('newJoueur', { joueur : this.currentJoueur });
   }
 
-  addMessage(message: HTMLInputElement){
-    if(message.value != "")
-    {
-        this.chatElementComponent.setJoueur(this.currentJoueur);
-        this.chatElementComponent.setMessage(message.value);
 
-        this.socket.emit('newMessage', { message:  this.chatElementComponent });
+  addMessage(message: HTMLInputElement) {
+        if (message.value != "") {
+            this.chatElementComponent.setJoueur(this.currentJoueur);
+            this.chatElementComponent.setMessage(message.value);
 
-        message.value = null;
+            this.socket.emit('newMessage', {message: this.chatElementComponent});
+
+            message.value = null;
+        }
     }
-  }
 
-  initialisationRoles(voyante, chasseur, petiteFille, cupidon, sorciere){
-      if(voyante) this.roles.push("voyante");
-      if(chasseur) this.roles.push("chasseur");
-      if(petiteFille) this.roles.push("petiteFille");
-      if(cupidon) this.roles.push("cupidon");
-      if(sorciere) this.roles.push("sorciere");
+    initialisationRoles(voyante, chasseur, petiteFille, cupidon, sorciere) {
+        if (voyante) this.roles.push("voyante");
+        if (chasseur) this.roles.push("chasseur");
+        if (petiteFille) this.roles.push("petiteFille");
+        if (cupidon) this.roles.push("cupidon");
+        if (sorciere) this.roles.push("sorciere");
 
 
-      this.roles.push("loup");
-      this.nbLoups++;
+        this.roles.push("loup");
+        this.nbLoups++;
 
-      switch (this.nombreDeJoueurs) {
+        switch (this.nombreDeJoueurs) {
             case 6:
-              if(this.roles.length != 6)
-              {
+                if (this.roles.length != 6) {
+                    this.roles.push("loup");
+                    this.nbLoups++;
+                }
+                break;
+            case 7:
                 this.roles.push("loup");
                 this.nbLoups++;
-              }
-              break;
-            case 7:
-              this.roles.push("loup");
-              this.nbLoups++;
-              break;
+                break;
             default:
-              this.roles.push("loup");
-              this.roles.push("loup");
-              this.nbLoups++;
-              this.nbLoups++;
-              break;
-          }
+                this.roles.push("loup");
+                this.roles.push("loup");
+                this.nbLoups++;
+                this.nbLoups++;
+                break;
+        }
 
-      var max = this.nombreDeJoueurs - this.roles.length;
-      for (var i = 0; i < max; i++) {
-             this.roles.push("villageois");
-      }
+        var max = this.nombreDeJoueurs - this.roles.length;
+        for (var i = 0; i < max; i++) {
+            this.roles.push("villageois");
+        }
 
-      this.roles = this.shuffle(this.roles);
+        this.roles = this.shuffle(this.roles);
 
-      for (var i =  0; i < this.nombreDeJoueurs; i++) {
+        for (var i = 0; i < this.nombreDeJoueurs; i++) {
             this.joueurs[i].setRole(this.roles[i]);
-     }
+        }
 
-     this.socket.emit("updateTabJoueur",this.joueurs);
-     this.nbGentil = this.joueurs.length - this.nbLoups;
-     this.demarrerLaPartie();
-  }
+        this.socket.emit("updateTabJoueur", this.joueurs);
+        this.nbGentil = this.joueurs.length - this.nbLoups;
+        this.demarrerLaPartie();
+    }
 
   demarrerLaPartie(){
     document.getElementById('configPartie').style.display = "none";
@@ -211,27 +210,26 @@ export class AppComponent implements OnInit{
     this.socket.emit('newMessage', { message:  this.chatElementComponent , start: true});
     this.boucleJeu();
 
-  }
+    }
 
-  boucleJeu() {
-    console.log("ICI");
-    this.nuit(function () {
-      this.nbLoups--;
-      console.log(this.nbLoups);
-      if (this.nbLoups == 0){
-        this.serveurParle("les villageois ont gagné");
-      }else{
-        this.jour(function(){
-          if (this.nbLoups == 0){
-            this.serveurParle("les villagois ont gagné")
-          }else{
-            this.boucleJeu();
-          }
+    boucleJeu() {
+        console.log("ICI");
+        this.nuit(function () {
+            this.nbLoups--;
+            console.log(this.nbLoups);
+            if (this.nbLoups == 0) {
+                this.serveurParle("Les villageois ont gagné");
+            } else {
+                this.jour(function () {
+                    if (this.nbLoups == 0) {
+                        this.serveurParle("Les villagois ont gagné")
+                    } else {
+                        this.boucleJeu();
+                    }
+                }.bind(this));
+            }
         }.bind(this));
       }
-    }.bind(this));
-  }
-
 
   nuit(callback){
     document.getElementById("vote").style.display="none";
@@ -267,23 +265,22 @@ export class AppComponent implements OnInit{
     this.socket.emit('newMessage', { message:  this.chatElementComponent});
   }
 
+    shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
 
-  shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
 
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
 
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
 
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
+        return array;
+    }
 }

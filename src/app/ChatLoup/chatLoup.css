@@ -1,9 +1,7 @@
 .contenuLoup{
-  margin-left: 320px;
-	height: 300px;
-  width:100px;
-	background-color: grey;
-	color:white;
+    height: 300px;
+    background-color: grey;
+    color:white;
 }
 
 p{

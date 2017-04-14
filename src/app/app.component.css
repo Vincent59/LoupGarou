@@ -70,8 +70,12 @@
     height: 100%;
 }
 
-.role {
-    height: 60%;
+#spectateur {
+    text-align: center;
+}
+
+.infos_role {
+    height: 70%;
     padding: 10px;
     background: lightblue;
 }
@@ -79,12 +83,57 @@
 .pseudo {
     text-align: center;
     font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+#role {
+    text-align: center;
+    display: none;
+}
+.role_name {
+    font-weight: bold;
+}
+
+.config {
+    text-align: center;
+}
+
+.config_role {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px;
+    display: inline-block;
+    text-align: center;
+}
+.config_role_left {
+    float: left;
+    text-align: left;
+}
+.config_role_right {
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+}
+
+.loup_input_msg {
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    background: lightblue;
+}
+.loup_input_msg input {
+    background: lightblue;
+    height: 29px;
+    line-height: 29px;
+    border: 1px solid darkturquoise;
+    width: 100%;
 }
 
 .joueurs {
     padding: 10px;
     background: darkturquoise;
-    height: 40%;
+    height: 30%;
     overflow: scroll;
 }
 .joueurs li {
