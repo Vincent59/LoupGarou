@@ -46,7 +46,7 @@
     width: 100%;
     background: powderblue;
     padding: 10px 5px 5px 0px;
-    overflow: scroll;
+    overflow-y: auto;
     position: relative;
 }
 
@@ -133,7 +133,7 @@
     height: 100%;
     background-color: darkcyan;
     color:white;
-    overflow: scroll;
+    overflow-y: auto;
     position: relative;
 }
 
@@ -155,7 +155,7 @@
     padding: 10px;
     background: darkturquoise;
     height: 30%;
-    overflow: scroll;
+    overflow-y: auto;
 }
 .joueurs li {
     font-size: 12px;
