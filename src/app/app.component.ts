@@ -9,103 +9,143 @@ import {ChatElementComponent} from './Chat/chatElement.component';
     styleUrls: ['./app.component.css'],
 })
 
-export class AppComponent implements OnInit {
-    private socket: any;
+export class AppComponent implements OnInit{
+  private socket:any;
 
-    private joueurs: Joueur[] = [];
-    private currentJoueur: Joueur = new Joueur();
-    private nombreDeJoueurs = 0;
-    private errorDoublon = "";
-    private erreurIp = "";
-    private loop = 0;
-    public loopDeux = 0;
-    private start = false;
-    private nbLoups = 0;
-    private nbGentil = 0;
-    private partieStart = false;
-    private server;
+  private joueurs : Joueur[] = [];
+  private currentJoueur : Joueur = new Joueur();
+  private nombreDeJoueurs = 0;
+  private errorDoublon = "";
+  private erreurIp = "";
+  private loop = 0;
+  public loopDeux = 0;
+  private start = false;
+  private nbLoups = 0;
+  private nbGentil = 0;
+  private partieStart = false;
+  private server;
 
-    private chatElementComponent = new ChatElementComponent();
+  private chatElementComponent = new ChatElementComponent();
 
-    private roles = [];
-    private nbVillageois = 0;
+  private roles = [];
+  private nbVillageois = 0;
 
-    ngOnInit(): void {
-        //192.168.43.39
-        this.socket = io('http://localhost:3005'); //localhost en local
+  ngOnInit(): void {
+    //192.168.43.39
+    this.socket = io('http://localhost:3005'); //localhost en local
 
-        this.server = new Joueur();
-        this.server.setPseudo("Serveur");
+    this.server = new Joueur();
+    this.server.setPseudo("Serveur");
 
-        this.socket.on('partieEnCours', function (data) {
-            document.querySelector("#inscription").remove();
-            document.getElementById("spectateur").style.display = "block";
-            document.getElementById("room").style.display = "inline-block";
-        });
+    this.socket.on('partieEnCours', function (data) {
+      document.querySelector("#inscription").remove();
+      document.getElementById("spectateur").style.display = "block";
+      document.getElementById("room").style.display = "block";
+    });
 
-        this.socket.on('getJoueurs', function (data) {
-            if (this.loop != 0) {
-                if (this.errorDoublon == "" && this.erreurIp == "") {
-                    document.querySelector("#inscription").remove();
-                    document.getElementById("role").style.display = "block";
-                    document.getElementById("room").style.display = "inline-block";
-                }
-            }
-            this.loop++;
-        }.bind(this));
+    this.socket.on('getJoueurs', function (data) {
+      if(this.loop != 0){
+        if(this.errorDoublon=="" && this.erreurIp=="") {
+          document.querySelector("#inscription").remove();
+          document.getElementById("room").style.display = "block";
+        }
+      }
+      this.loop++;
+    }.bind(this));
 
-        this.socket.on('erreurDoublon', function (data) {
-            this.errorDoublon = data.message;
-        }.bind(this));
+    this.socket.on('erreurDoublon',function(data){
+      this.errorDoublon = data.message;
+    }.bind(this));
 
-        // this.socket.on('erreurIp',function(data){ //a deco en local
-        //   this.erreurIp = data.message; //a deco en local
-        // }.bind(this)); //a deco en local
+    // this.socket.on('erreurIp',function(data){ //a deco en local
+    //   this.erreurIp = data.message; //a deco en local
+    // }.bind(this)); //a deco en local
 
-        this.socket.on('joueurs', function (data) {
-            var loopDeux = this.loopDeux;
-            var pseudoJoueur = this.currentJoueur;
-            var tmp = [];
-            console.log(data.tabJoueur);
-            data.tabJoueur.forEach(function (e, i) {
-                var j = new Joueur();
-                j.setPseudo(e.pseudo);
-                j.setIp(e.ip);
-                j.setRole(e.role);
+    this.socket.on('joueurs', function (data) {
+      var loopDeux = this.loopDeux;
+      var pseudoJoueur = this.currentJoueur;
+      var tmp = [];
+      console.log(data.tabJoueur);
+      data.tabJoueur.forEach(function(e,i){
+          var j = new Joueur();
+          j.setPseudo(e.pseudo);
+          j.setIp(e.ip);
+          j.setRole(e.role);
+          j.setNbVote(e.nbVote);
+          j.setAVote(e.aVote);
 
-                if (i == 0) {
-                    j.setIsMaster(true);
-                }
-                tmp.push(j);
+          if(i == 0){
+            j.setIsMaster(true);
+          }
+          tmp.push(j);
+       
+      });
 
-            });
+      this.joueurs = tmp;
 
-            this.joueurs = tmp;
+      for(var i=0; i < this.joueurs.length; i++){
+        if(this.joueurs[i].pseudo == this.currentJoueur.pseudo){
+          this.currentJoueur.setRole(this.joueurs[i].role);
+        }
+      }
 
-            for (var i = 0; i < this.joueurs.length; i++) {
-                if (this.joueurs[i].pseudo == this.currentJoueur.pseudo) {
-                    this.currentJoueur.setRole(this.joueurs[i].role);
-                }
-            }
+      this.nombreDeJoueurs = this.joueurs.length;
 
-            this.nombreDeJoueurs = this.joueurs.length;
+      if(this.nombreDeJoueurs >= 6) //peut on lancer la partie
+      {
+          this.start = true;
+      }
+    }.bind(this));
+  }
 
-            if (this.nombreDeJoueurs >= 6) //peut on lancer la partie
+  vote(pseudo){
+     if(this.currentJoueur.aVote != null)
+     {
+        this.joueurs.forEach(function(i){
+            if(i.pseudo == this.currentJoueur.pseudo)
             {
-                this.start = true;
+              this.joueurs.forEach(function(n){
+                console.log(n.pseudo + " " + i.aVote);
+                if(n.pseudo == i.aVote)
+                {
+                  n.removeVote();
+                  this.currentJoueur.aVote = null;
+                }
+              }.bind(this));
             }
         }.bind(this));
-    }
+     }
 
-    addJoueur(pseudo) {
-        this.errorDoublon = "";
-        this.erreurIp = "";
-        this.currentJoueur.setPseudo(pseudo);
-        this.chatElementComponent.setJoueur(this.currentJoueur);
-        this.socket.emit('newJoueur', {joueur: this.currentJoueur});
-    }
+     this.joueurs.forEach(function(e){
+          if(e.pseudo == pseudo){
+            e.addVote();
+     
+            this.joueurs.forEach(function(i){
+                if(i.pseudo == this.currentJoueur.pseudo)
+                {
+                  i.setAVote(e.pseudo);
+                  this.currentJoueur.setAVote(e.pseudo);
+                }
+            }.bind(this));
+          }
 
-    addMessage(message: HTMLInputElement) {
+      }.bind(this));
+
+      this.socket.emit('updateTabJoueur', this.joueurs);
+
+      console.log(this.joueurs);
+  }
+
+  addJoueur(pseudo){
+    this.errorDoublon = "";
+    this.erreurIp = "";
+    this.currentJoueur.setPseudo(pseudo);
+    this.chatElementComponent.setJoueur(this.currentJoueur);
+    this.socket.emit('newJoueur', { joueur : this.currentJoueur });
+  }
+
+
+  addMessage(message: HTMLInputElement) {
         if (message.value != "") {
             this.chatElementComponent.setJoueur(this.currentJoueur);
             this.chatElementComponent.setMessage(message.value);
@@ -189,40 +229,41 @@ export class AppComponent implements OnInit {
                 }.bind(this));
             }
         }.bind(this));
-    }
+      }
 
+  nuit(callback){
+    document.getElementById("vote").style.display="none";
+    this.serveurParle("La nuit tombe ...");
+    this.serveurParle("La voyante se reveille");
+    setTimeout(function(){
+      this.serveurParle("La loups et la petite fille se reveillent");
+      setTimeout(function(){
+        this.serveurParle("Les loups ont désigné leurs cibles");
+        this.serveurParle("La sorcière se reveille");
+        setTimeout(function(){
+          console.log("sorcière ok");
+          callback();
+        }.bind(this),15000)
+      }.bind(this),30000)
+    }.bind(this),15000)
+  }
 
-    nuit(callback) {
-        this.serveurParle("La nuit tombe ...");
-        this.serveurParle("La voyante se réveille");
-        setTimeout(function () {
-            this.serveurParle("Les loups et la petite fille se réveillent");
-            setTimeout(function () {
-                this.serveurParle("Les loups ont désigné leurs cibles");
-                this.serveurParle("La sorcière se réveille");
-                setTimeout(function () {
-                    console.log("sorcière ok");
-                    callback();
-                }.bind(this), 15000)
-            }.bind(this), 30000)
-        }.bind(this), 15000)
-    }
+  jour(callback){
+    this.serveurParle("Le jour se lève, ... est mort cette nuit");
+    this.serveurParle("Les joueurs doivent désigner un joueur à éliminé");
+    document.getElementById("vote").style.display="block";
 
-    jour(callback) {
-        this.serveurParle("Le jour se lève, ... est mort cette nuit");
-        this.serveurParle("Les joueurs doivent désigner un joueur à éliminer");
-        setTimeout(function () {
-            this.serveurParle("Les joueurs ont voté, ... est éliminé");
-            callback();
-        }.bind(this), 10000);
-    }
+    setTimeout(function(){
+      this.serveurParle("Les joueurs ont voté, ... est éliminé");
+      callback();
+    }.bind(this),10000);
+  }
 
-    serveurParle(message) {
-        this.chatElementComponent.setJoueur(this.server);
-        this.chatElementComponent.setMessage(message);
-        this.socket.emit('newMessage', {message: this.chatElementComponent});
-    }
-
+  serveurParle(message){
+    this.chatElementComponent.setJoueur(this.server);
+    this.chatElementComponent.setMessage(message);
+    this.socket.emit('newMessage', { message:  this.chatElementComponent});
+  }
 
     shuffle(array) {
         var currentIndex = array.length, temporaryValue, randomIndex;

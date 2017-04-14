@@ -16,7 +16,7 @@ partieStart = false;
 io.sockets.on('connection', function (socket) {
   console.log("partie start: "+partieStart);
   if(!partieStart) {
-    console.log("SUCE MA BITE")
+
     socket.emit('getJoueurs', {tabJoueur: tabJoueur});
     socket.emit('getMessages', {tabMessage: tabMessage});
 
@@ -50,21 +50,21 @@ io.sockets.on('connection', function (socket) {
         partieStart = true;
       }
       tabMessage.push(data.message);
-      if(tabMessage.length==16){
-        tabMessage.shift();
-        tabMessage.shift();
-        tabMessage.shift();
-      }
+      //if(tabMessage.length==16){
+        // tabMessage.shift();
+        // tabMessage.shift();
+        // tabMessage.shift();
+      //}
       io.emit('getMessages', {tabMessage: tabMessage});
     });
 
     socket.on('newMessageLoup', function (data) {
       tabMessageLoup.push(data.message);
-      if(tabMessageLoup.length==16){
-        tabMessageLoup.shift();
-        tabMessageLoup.shift();
-        tabMessageLoup.shift();
-      }
+      // if(tabMessageLoup.length==16){
+      //   tabMessageLoup.shift();
+      //   tabMessageLoup.shift();
+      //   tabMessageLoup.shift();
+      // }
       io.emit('getMessagesLoup', {tabMessage: tabMessage});
     });
 

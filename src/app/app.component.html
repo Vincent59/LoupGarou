@@ -38,6 +38,8 @@
                         <span *ngIf="personne.isMaster"> (master)</span>
                         <span *ngIf="personne.pseudo==currentJoueur.pseudo && currentJoueur.role!='loup' && currentJoueur.role"> ({{currentJoueur.role}})</span>
                         <span *ngIf="personne.role=='loup' && currentJoueur.role == 'loup'"> (loup)</span>
+                        <span>{{ personne.nbVote }}</span>
+                        <span *ngIf="personne.aVote">  => {{ personne.aVote }}</span>
                     </li>
                 </ul>
             </div>
@@ -76,6 +78,15 @@
                             <button  [class.noStart]="!start" [class.start]="start" (click)="initialisationRoles(voyante.checked, chasseur.checked, petiteFille.checked, cupidon.checked, sorciere.checked)" >Commencer la partie</button>
                         </div>
                     </div>
+                </div>
+                <div id="vote">
+                    <select #unVote>
+                        <option *ngFor="let personne of joueurs"> 
+                            <span *ngIf="personne.pseudo != currentJoueur.pseudo ; else toto" >{{personne.pseudo}}</span>
+                            <ng-template #toto>personne</ng-template>
+                        </option>
+                    </select>
+                    <button (click)="vote(unVote.value)">Votez</button>
                 </div>
                 <div id="chat_loup">
                     <div class="lg_chat">

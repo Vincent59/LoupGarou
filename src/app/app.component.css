@@ -174,3 +174,7 @@ ul {
 #configPartie{
   display: block;
 }
+
+#vote{
+    display: none;
+}
