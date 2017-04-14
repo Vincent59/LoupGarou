@@ -87,4 +87,12 @@ io.sockets.on('connection', function (socket) {
   }else{
     socket.emit('partieEnCours', true);
   }
+
+    socket.on('jour',function (data) {
+      io.emit('jourReponse',true);
+    })
+
+    socket.on('nuit',function (data) {
+    io.emit('nuitReponse',true);
+  })
 });

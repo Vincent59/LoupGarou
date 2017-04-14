@@ -4,9 +4,9 @@ import {Joueur} from './Joueur/Joueur';
 import {ChatElementComponent} from './Chat/chatElement.component';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 
 export class AppComponent implements OnInit{
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     //192.168.43.39
-    this.socket = io('http://localhost:3005'); //localhost en local
+    this.socket = io('http://192.168.43.39:3005'); //localhost en local
 
     this.server = new Joueur();
     this.server.setPseudo("Serveur");
@@ -42,6 +42,14 @@ export class AppComponent implements OnInit{
       document.getElementById("spectateur").style.display = "block";
       document.getElementById("room").style.display = "block";
     });
+
+    this.socket.on('jourReponse',function (data) {
+      document.getElementById("vote").style.display="block";
+    })
+
+    this.socket.on('nuitReponse',function (data) {
+      document.getElementById("vote").style.display="none";
+    })
 
     this.socket.on('getJoueurs', function (data) {
       if(this.loop != 0){
@@ -67,18 +75,18 @@ export class AppComponent implements OnInit{
       var tmp = [];
       console.log(data.tabJoueur);
       data.tabJoueur.forEach(function(e,i){
-          var j = new Joueur();
-          j.setPseudo(e.pseudo);
-          j.setIp(e.ip);
-          j.setRole(e.role);
-          j.setNbVote(e.nbVote);
-          j.setAVote(e.aVote);
+        var j = new Joueur();
+        j.setPseudo(e.pseudo);
+        j.setIp(e.ip);
+        j.setRole(e.role);
+        j.setNbVote(e.nbVote);
+        j.setAVote(e.aVote);
 
-          if(i == 0){
-            j.setIsMaster(true);
-          }
-          tmp.push(j);
-       
+        if(i == 0){
+          j.setIsMaster(true);
+        }
+        tmp.push(j);
+
       });
 
       this.joueurs = tmp;
@@ -93,47 +101,47 @@ export class AppComponent implements OnInit{
 
       if(this.nombreDeJoueurs >= 6) //peut on lancer la partie
       {
-          this.start = true;
+        this.start = true;
       }
     }.bind(this));
   }
 
   vote(pseudo){
-     if(this.currentJoueur.aVote != null)
-     {
-        this.joueurs.forEach(function(i){
-            if(i.pseudo == this.currentJoueur.pseudo)
+    if(this.currentJoueur.aVote != null)
+    {
+      this.joueurs.forEach(function(i){
+        if(i.pseudo == this.currentJoueur.pseudo)
+        {
+          this.joueurs.forEach(function(n){
+            console.log(n.pseudo + " " + i.aVote);
+            if(n.pseudo == i.aVote)
             {
-              this.joueurs.forEach(function(n){
-                console.log(n.pseudo + " " + i.aVote);
-                if(n.pseudo == i.aVote)
-                {
-                  n.removeVote();
-                  this.currentJoueur.aVote = null;
-                }
-              }.bind(this));
+              n.removeVote();
+              this.currentJoueur.aVote = null;
             }
-        }.bind(this));
-     }
-
-     this.joueurs.forEach(function(e){
-          if(e.pseudo == pseudo){
-            e.addVote();
-     
-            this.joueurs.forEach(function(i){
-                if(i.pseudo == this.currentJoueur.pseudo)
-                {
-                  i.setAVote(e.pseudo);
-                  this.currentJoueur.setAVote(e.pseudo);
-                }
-            }.bind(this));
-          }
-
+          }.bind(this));
+        }
       }.bind(this));
+    }
 
-      this.socket.emit('updateTabJoueur', this.joueurs);
+    this.joueurs.forEach(function(e){
+      if(e.pseudo == pseudo){
+        e.addVote();
 
-      console.log(this.joueurs);
+        this.joueurs.forEach(function(i){
+          if(i.pseudo == this.currentJoueur.pseudo)
+          {
+            i.setAVote(e.pseudo);
+            this.currentJoueur.setAVote(e.pseudo);
+          }
+        }.bind(this));
+      }
+
+    }.bind(this));
+
+    this.socket.emit('updateTabJoueur', this.joueurs);
+
+    console.log(this.joueurs);
   }
 
   addJoueur(pseudo){
@@ -146,61 +154,61 @@ export class AppComponent implements OnInit{
 
 
   addMessage(message: HTMLInputElement) {
-        if (message.value != "") {
-            this.chatElementComponent.setJoueur(this.currentJoueur);
-            this.chatElementComponent.setMessage(message.value);
+    if (message.value != "") {
+      this.chatElementComponent.setJoueur(this.currentJoueur);
+      this.chatElementComponent.setMessage(message.value);
 
-            this.socket.emit('newMessage', {message: this.chatElementComponent});
+      this.socket.emit('newMessage', {message: this.chatElementComponent});
 
-            message.value = null;
-        }
+      message.value = null;
     }
+  }
 
-    initialisationRoles(voyante, chasseur, petiteFille, cupidon, sorciere) {
-        if (voyante) this.roles.push("voyante");
-        if (chasseur) this.roles.push("chasseur");
-        if (petiteFille) this.roles.push("petiteFille");
-        if (cupidon) this.roles.push("cupidon");
-        if (sorciere) this.roles.push("sorciere");
+  initialisationRoles(voyante, chasseur, petiteFille, cupidon, sorciere) {
+    if (voyante) this.roles.push("voyante");
+    if (chasseur) this.roles.push("chasseur");
+    if (petiteFille) this.roles.push("petiteFille");
+    if (cupidon) this.roles.push("cupidon");
+    if (sorciere) this.roles.push("sorciere");
 
 
+    this.roles.push("loup");
+    this.nbLoups++;
+
+    switch (this.nombreDeJoueurs) {
+      case 6:
+        if (this.roles.length != 6) {
+          this.roles.push("loup");
+          this.nbLoups++;
+        }
+        break;
+      case 7:
         this.roles.push("loup");
         this.nbLoups++;
-
-        switch (this.nombreDeJoueurs) {
-            case 6:
-                if (this.roles.length != 6) {
-                    this.roles.push("loup");
-                    this.nbLoups++;
-                }
-                break;
-            case 7:
-                this.roles.push("loup");
-                this.nbLoups++;
-                break;
-            default:
-                this.roles.push("loup");
-                this.roles.push("loup");
-                this.nbLoups++;
-                this.nbLoups++;
-                break;
-        }
-
-        var max = this.nombreDeJoueurs - this.roles.length;
-        for (var i = 0; i < max; i++) {
-            this.roles.push("villageois");
-        }
-
-        this.roles = this.shuffle(this.roles);
-
-        for (var i = 0; i < this.nombreDeJoueurs; i++) {
-            this.joueurs[i].setRole(this.roles[i]);
-        }
-
-        this.socket.emit("updateTabJoueur", this.joueurs);
-        this.nbGentil = this.joueurs.length - this.nbLoups;
-        this.demarrerLaPartie();
+        break;
+      default:
+        this.roles.push("loup");
+        this.roles.push("loup");
+        this.nbLoups++;
+        this.nbLoups++;
+        break;
     }
+
+    var max = this.nombreDeJoueurs - this.roles.length;
+    for (var i = 0; i < max; i++) {
+      this.roles.push("villageois");
+    }
+
+    this.roles = this.shuffle(this.roles);
+
+    for (var i = 0; i < this.nombreDeJoueurs; i++) {
+      this.joueurs[i].setRole(this.roles[i]);
+    }
+
+    this.socket.emit("updateTabJoueur", this.joueurs);
+    this.nbGentil = this.joueurs.length - this.nbLoups;
+    this.demarrerLaPartie();
+  }
 
   demarrerLaPartie(){
     document.getElementById('configPartie').style.display = "none";
@@ -210,29 +218,29 @@ export class AppComponent implements OnInit{
     this.socket.emit('newMessage', { message:  this.chatElementComponent , start: true});
     this.boucleJeu();
 
-    }
+  }
 
-    boucleJeu() {
-        console.log("ICI");
-        this.nuit(function () {
-            this.nbLoups--;
-            console.log(this.nbLoups);
-            if (this.nbLoups == 0) {
-                this.serveurParle("Les villageois ont gagné");
-            } else {
-                this.jour(function () {
-                    if (this.nbLoups == 0) {
-                        this.serveurParle("Les villagois ont gagné")
-                    } else {
-                        this.boucleJeu();
-                    }
-                }.bind(this));
-            }
+  boucleJeu() {
+    console.log("ICI");
+    this.nuit(function () {
+      this.nbLoups--;
+      console.log(this.nbLoups);
+      if (this.nbLoups == 0) {
+        this.serveurParle("Les villageois ont gagné");
+      } else {
+        this.jour(function () {
+          if (this.nbLoups == 0) {
+            this.serveurParle("Les villagois ont gagné")
+          } else {
+            this.boucleJeu();
+          }
         }.bind(this));
       }
+    }.bind(this));
+  }
 
   nuit(callback){
-    document.getElementById("vote").style.display="none";
+    this.socket.emit("nuit",true);
     this.serveurParle("La nuit tombe ...");
     this.serveurParle("La voyante se reveille");
     setTimeout(function(){
@@ -251,12 +259,12 @@ export class AppComponent implements OnInit{
   jour(callback){
     this.serveurParle("Le jour se lève, ... est mort cette nuit");
     this.serveurParle("Les joueurs doivent désigner un joueur à éliminé");
-    document.getElementById("vote").style.display="block";
+    this.socket.emit("jour",true);
 
     setTimeout(function(){
       this.serveurParle("Les joueurs ont voté, ... est éliminé");
       callback();
-    }.bind(this),10000);
+    }.bind(this),30000);
   }
 
   serveurParle(message){
@@ -265,22 +273,22 @@ export class AppComponent implements OnInit{
     this.socket.emit('newMessage', { message:  this.chatElementComponent});
   }
 
-    shuffle(array) {
-        var currentIndex = array.length, temporaryValue, randomIndex;
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
 
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
 
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
 
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-
-        return array;
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
     }
+
+    return array;
+  }
 }
