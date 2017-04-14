@@ -1,11 +1,84 @@
-<label>Votre pseudo:</label>
-<input #idPseudo (keyup.enter)="addJoueur(idPseudo.value)" type="text"/>
+<div class="container-fluid">
+    <div class="row height100">
+        <!-- MAIN -->
+        <div class="col-12 col-sm-8 col-lg-8 main">
+            <div class="loupgarou col-lg-12">
+                LOUP-GAROU
+            </div>
+            <div id="inscription">
+                <label>Votre pseudo :</label><br />
+                <input #idPseudo (keyup.enter)="addJoueur(idPseudo.value)" type="text"/>
+                <p class="error">{{errorDoublon}}</p>
+                <p class="error">{{erreurIp}}</p>
+            </div>
+            <!-- ROOM -->
+            <div id="room">
+                <div class="row room_content">
+                    <div class="lg_app">
+                        <div class="row absolute">
+                            <div class="chatbox col-sm-6">
+                                <chat-room></chat-room>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="input_msg">
+                    <input placeholder='Votre message ici...' #idMessage (keyup.enter)="addMessage(idMessage)"/>
+                </div>
+            </div>
+        </div>
+        <!-- SIDEBAR -->
+        <div class="col-12 col-sm-4 col-lg-4 right">
+            <div class="infos_role">
+                <div id="spectateur">
+                    <h1>Vous êtes en mode spectateur !</h1>
+                </div>
+                <div class="pseudo">
+                    {{ currentJoueur.pseudo }}
+                </div>
+                <div id="role">
+                    Vous êtes : <span class="role_name">{{ currentJoueur.role }}</span>
+                </div>
+                <div id="configPartie">
+                    <div class="config" *ngFor="let personne of joueurs">
+                         <div class="config_role" *ngIf="personne.isMaster && personne.pseudo == currentJoueur.pseudo">
+                         <p>Rôles à affecter :</p>
+                            <div class="config_role_left">
+                                <input #voyante type="checkbox" data-toggle="toggle">
+                                <label>Voyante</label>
+                                <br>
+                                <input #chasseur type="checkbox" data-toggle="toggle">
+                                <label>Chasseur</label>
+                                <br>
+                                <input #petiteFille type="checkbox" data-toggle="toggle">
+                                <label>Petite fille</label>
+                            </div>
+                            <div class="config_role_right">
+                                <input #cupidon type="checkbox" data-toggle="toggle">
+                                <label>Cupidon</label>
+                                <br>
+                                <input #sorciere type="checkbox" data-toggle="toggle">
+                                <label>Sorcière</label>
+                            </div>
+                            <button  [class.noStart]="!start" [class.start]="start" (click)="initialisationRoles(voyante.checked, chasseur.checked, petiteFille.checked, cupidon.checked, sorciere.checked)" >Commencer la partie</button>
+                        </div>
+                    </div>
+                </div>
+                <chat-loup></chat-loup>
+                <div class="loup_input_msg">
+                    <input placeholder='Votre message aux loups ici...'/>
+                </div>
+            </div>
 
-<h1>Bienvenue {{ currentJoueur.pseudo }}</h1>
-
-<h2>Liste des joueurs connectés</h2>
-<ul>
-	 <li *ngFor="let personne of joueurs">
-	 	{{ personne.pseudo }}
-	 </li>
- </ul>
+            <div class="joueurs">
+                Joueurs
+                <ul>
+                    <li *ngFor="let personne of joueurs">
+                        {{ personne.pseudo }}
+                        <span *ngIf="personne.isMaster"> (master)</span>
+                        <span *ngIf="personne.pseudo==currentJoueur.pseudo && currentJoueur.role!='loup' && currentJoueur.role"> ({{currentJoueur.role}})</span>
+                        <span *ngIf="personne.role=='loup' && currentJoueur.role == 'loup'"> (loup)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>

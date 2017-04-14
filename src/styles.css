@@ -1,1 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: aliceblue;
+}
+
+.container-fluid {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.height100 {
+    height: 100%;
+}
+
+.absolute {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+.start
+{
+    display: block;
+}
+
+.noStart
+{
+    display: none;
+}
