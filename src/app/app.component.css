@@ -76,8 +76,9 @@
 
 .infos_role {
     height: 70%;
-    padding: 10px;
+    padding: 10px 0 0 0;
     background: lightblue;
+    position: relative;
 }
 
 .pseudo {
@@ -114,6 +115,26 @@
     float: left;
     margin-left: 10px;
     text-align: left;
+}
+
+#chat_loup {
+    height: 250px;
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+}
+
+.lg_chat {
+    position: relative;
+    height: 100%;
+}
+
+.chatbox_loup {
+    height: 100%;
+    background-color: darkcyan;
+    color:white;
+    overflow: scroll;
+    position: relative;
 }
 
 .loup_input_msg {

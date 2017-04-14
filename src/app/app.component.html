@@ -29,6 +29,19 @@
         </div>
         <!-- SIDEBAR -->
         <div class="col-12 col-sm-4 col-lg-4 right">
+            <!-- JOUEURS -->
+            <div class="joueurs">
+                Joueurs
+                <ul>
+                    <li *ngFor="let personne of joueurs">
+                        {{ personne.pseudo }}
+                        <span *ngIf="personne.isMaster"> (master)</span>
+                        <span *ngIf="personne.pseudo==currentJoueur.pseudo && currentJoueur.role!='loup' && currentJoueur.role"> ({{currentJoueur.role}})</span>
+                        <span *ngIf="personne.role=='loup' && currentJoueur.role == 'loup'"> (loup)</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- INFOS ROLE / CHAT LOUP -->
             <div class="infos_role">
                 <div id="spectateur">
                     <h1>Vous êtes en mode spectateur !</h1>
@@ -64,21 +77,19 @@
                         </div>
                     </div>
                 </div>
-                <chat-loup></chat-loup>
-                <div class="loup_input_msg">
-                    <input placeholder='Votre message aux loups ici...'/>
+                <div id="chat_loup">
+                    <div class="lg_chat">
+                        <div class="row absolute">
+                            <div class="chatbox_loup">
+                                <chat-loup></chat-loup>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="loup_input_msg">
+                        <input placeholder='Votre message aux loups ici...'/>
+                    </div>
                 </div>
             </div>
-
-            <div class="joueurs">
-                Joueurs
-                <ul>
-                    <li *ngFor="let personne of joueurs">
-                        {{ personne.pseudo }}
-                        <span *ngIf="personne.isMaster"> (master)</span>
-                        <span *ngIf="personne.pseudo==currentJoueur.pseudo && currentJoueur.role!='loup' && currentJoueur.role"> ({{currentJoueur.role}})</span>
-                        <span *ngIf="personne.role=='loup' && currentJoueur.role == 'loup'"> (loup)</span>
-                    </li>
-                </ul>
-            </div>
         </div>
+    </div>
+</div>
