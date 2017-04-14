@@ -32,7 +32,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     //192.168.43.39
-    this.socket = io('http://192.168.43.39:3005'); //localhost en local
+    this.socket = io('http://localhost:3005'); //localhost en local
 
     this.server = new Joueur();
     this.server.setPseudo("Serveur");
@@ -71,12 +71,14 @@ export class AppComponent implements OnInit{
           j.setPseudo(e.pseudo);
           j.setIp(e.ip);
           j.setRole(e.role);
+          j.setNbVote(e.nbVote);
+          j.setAVote(e.aVote);
 
           if(i == 0){
             j.setIsMaster(true);
           }
           tmp.push(j);
-
+       
       });
 
       this.joueurs = tmp;
@@ -94,6 +96,44 @@ export class AppComponent implements OnInit{
           this.start = true;
       }
     }.bind(this));
+  }
+
+  vote(pseudo){
+     if(this.currentJoueur.aVote != null)
+     {
+        this.joueurs.forEach(function(i){
+            if(i.pseudo == this.currentJoueur.pseudo)
+            {
+              this.joueurs.forEach(function(n){
+                console.log(n.pseudo + " " + i.aVote);
+                if(n.pseudo == i.aVote)
+                {
+                  n.removeVote();
+                  this.currentJoueur.aVote = null;
+                }
+              }.bind(this));
+            }
+        }.bind(this));
+     }
+
+     this.joueurs.forEach(function(e){
+          if(e.pseudo == pseudo){
+            e.addVote();
+     
+            this.joueurs.forEach(function(i){
+                if(i.pseudo == this.currentJoueur.pseudo)
+                {
+                  i.setAVote(e.pseudo);
+                  this.currentJoueur.setAVote(e.pseudo);
+                }
+            }.bind(this));
+          }
+
+      }.bind(this));
+
+      this.socket.emit('updateTabJoueur', this.joueurs);
+
+      console.log(this.joueurs);
   }
 
   addJoueur(pseudo){
@@ -194,6 +234,7 @@ export class AppComponent implements OnInit{
 
 
   nuit(callback){
+    document.getElementById("vote").style.display="none";
     this.serveurParle("La nuit tombe ...");
     this.serveurParle("La voyante se reveille");
     setTimeout(function(){
@@ -212,6 +253,8 @@ export class AppComponent implements OnInit{
   jour(callback){
     this.serveurParle("Le jour se lève, ... est mort cette nuit");
     this.serveurParle("Les joueurs doivent désigner un joueur à éliminé");
+    document.getElementById("vote").style.display="block";
+
     setTimeout(function(){
       this.serveurParle("Les joueurs ont voté, ... est éliminé");
       callback();

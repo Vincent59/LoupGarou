@@ -13,6 +13,8 @@ export class Joueur
 	public role;
 	public isMort: boolean;
 	public isMaster: boolean = false;
+	public nbVote = 0;
+	public aVote: string;
 
 	public setPseudo(pseudo)
 	{
@@ -29,5 +31,21 @@ export class Joueur
 
   	public setRole(role){
 	  this.role = role;
+  	}
+
+  	public setNbVote(vote){
+  		this.nbVote = vote;
+  	}
+
+  	public setAVote(vote){
+  		this.aVote = vote;
+  	}
+
+  	public addVote(){
+  		this.nbVote++;
+  	}
+
+  	public removeVote(){
+  		this.nbVote--;
   	}
 }

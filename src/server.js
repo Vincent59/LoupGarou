@@ -16,7 +16,7 @@ partieStart = false;
 io.sockets.on('connection', function (socket) {
   console.log("partie start: "+partieStart);
   if(!partieStart) {
-    console.log("SUCE MA BITE")
+
     socket.emit('getJoueurs', {tabJoueur: tabJoueur});
     socket.emit('getMessages', {tabMessage: tabMessage});
 
