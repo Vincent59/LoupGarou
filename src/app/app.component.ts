@@ -162,13 +162,13 @@ export class AppComponent implements OnInit {
         this.demarrerLaPartie();
     }
 
-    demarrerLaPartie() {
-        this.partieStart = true;
-        this.chatElementComponent.setJoueur(this.server);
-        this.chatElementComponent.setMessage("La partie commence ...");
-        this.socket.emit('newMessage', {message: this.chatElementComponent, start: true});
-        console.log(this.joueurs);
-        this.boucleJeu();
+  demarrerLaPartie(){
+    document.getElementById('configPartie').style.display = "none";
+    this.partieStart = true;
+    this.chatElementComponent.setJoueur(this.server);
+    this.chatElementComponent.setMessage("La partie commence ...");
+    this.socket.emit('newMessage', { message:  this.chatElementComponent , start: true});
+    this.boucleJeu();
 
     }
 

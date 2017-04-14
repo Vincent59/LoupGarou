@@ -39,36 +39,37 @@
                 <div id="role">
                     Vous êtes : <span class="role_name">{{ currentJoueur.role }}</span>
                 </div>
-
-                <div class="config" *ngFor="let personne of joueurs">
-                    <div class="config_role" *ngIf="personne.isMaster && personne.pseudo == currentJoueur.pseudo">
-                        <p>Rôles à affecter :</p>
-                        <div class="config_role_left">
-                            <input #voyante type="checkbox" data-toggle="toggle">
-                            <label>Voyante</label>
-                            <br>
-                            <input #chasseur type="checkbox" data-toggle="toggle">
-                            <label>Chasseur</label>
-                            <br>
-                            <input #petiteFille type="checkbox" data-toggle="toggle">
-                            <label>Petite fille</label>
+                <div id="configPartie">
+                    <div class="config" *ngFor="let personne of joueurs">
+                         <div class="config_role" *ngIf="personne.isMaster && personne.pseudo == currentJoueur.pseudo">
+                         <p>Rôles à affecter :</p>
+                            <div class="config_role_left">
+                                <input #voyante type="checkbox" data-toggle="toggle">
+                                <label>Voyante</label>
+                                <br>
+                                <input #chasseur type="checkbox" data-toggle="toggle">
+                                <label>Chasseur</label>
+                                <br>
+                                <input #petiteFille type="checkbox" data-toggle="toggle">
+                                <label>Petite fille</label>
+                            </div>
+                            <div class="config_role_right">
+                                <input #cupidon type="checkbox" data-toggle="toggle">
+                                <label>Cupidon</label>
+                                <br>
+                                <input #sorciere type="checkbox" data-toggle="toggle">
+                                <label>Sorcière</label>
+                            </div>
+                            <button  [class.noStart]="!start" [class.start]="start" (click)="initialisationRoles(voyante.checked, chasseur.checked, petiteFille.checked, cupidon.checked, sorciere.checked)" >Commencer la partie</button>
                         </div>
-                        <div class="config_role_right">
-                            <input #cupidon type="checkbox" data-toggle="toggle">
-                            <label>Cupidon</label>
-                            <br>
-                            <input #sorciere type="checkbox" data-toggle="toggle">
-                            <label>Sorcière</label>
-                        </div>
-                        <button  [class.noStart]="!start" [class.start]="start" (click)="initialisationRoles(voyante.checked, chasseur.checked, petiteFille.checked, cupidon.checked, sorciere.checked)" >Commencer la partie</button>
                     </div>
                 </div>
-
                 <chat-loup></chat-loup>
                 <div class="loup_input_msg">
                     <input placeholder='Votre message aux loups ici...'/>
                 </div>
             </div>
+
             <div class="joueurs">
                 Joueurs
                 <ul>
@@ -81,8 +82,3 @@
                 </ul>
             </div>
         </div>
-    </div>
-
-
-
-</div>
