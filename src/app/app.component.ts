@@ -32,7 +32,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     //192.168.43.39
-    this.socket = io('http://localhost:3005'); //localhost en local
+    this.socket = io('http://192.168.43.39:3005'); //localhost en local
 
     this.server = new Joueur();
     this.server.setPseudo("Serveur");
