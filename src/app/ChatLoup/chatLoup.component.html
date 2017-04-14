@@ -1,3 +1,10 @@
 <div class="contenuLoup">
-	<p *ngFor="let message of messages">{{ message.joueur.pseudo }}: {{message.message}}</p>
+    <p *ngFor="let message of messages">
+        <span class="loup_pseudo">
+            {{ message.joueur.pseudo }}
+        </span>
+        <span class="loup_msg">
+            {{message.message}}
+        </span>
+    </p>
 </div>
